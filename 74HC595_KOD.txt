@@ -1,6 +1,6 @@
-/*tek sayılarda soluk gözüksün çift sayılarda parlak yansın 
- * butona ilk bastığında pot ile parlaklık ayarla
- * butona ikinci bastığında pot ile sayaç hızını ayarla
+/*
+ *
+ * 
  * 
  * 
  * 
