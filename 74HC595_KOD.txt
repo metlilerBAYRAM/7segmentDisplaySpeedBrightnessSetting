@@ -1,0 +1,85 @@
+/*tek sayılarda soluk gözüksün çift sayılarda parlak yansın 
+ * butona ilk bastığında pot ile parlaklık ayarla
+ * butona ikinci bastığında pot ile sayaç hızını ayarla
+ * 
+ * 
+ * 
+ */
+
+unsigned long eskiZaman = 0;
+unsigned long eskiZaman1 = 0; 
+int clockPin=5,latchPin=4,dataPin=3, outputEnablePin = 6;
+int say = 0,say1 = 0, birler, onlar;//say = display için sayaç,say1 =
+int sayac=1;
+int buton, pot = A0, hiz, parlaklik;
+
+
+byte rakamlar[] = {
+ B00111111, // 0
+ B00000110, // 1
+ B01011011, // 2
+ B01001111, // 3
+ B01100110, // 4
+ B01101101, // 5
+ B01111101, // 6
+ B00000111, // 7
+ B01111111, // 8
+ B01101111, // 9
+ B00000000}; // Tüm ledleri söndürür
+
+ 
+void setup() {
+
+      pinMode(latchPin, OUTPUT);
+      pinMode(clockPin, OUTPUT);
+      pinMode(dataPin, OUTPUT);
+      pinMode(pot,INPUT);
+      pinMode(2, INPUT_PULLUP);
+      pinMode(outputEnablePin, OUTPUT);
+  
+}
+
+
+void loop() {
+
+    buton = digitalRead(2);             // 2 numaralı pinden dijital okuma yapıyoruz.
+  if (millis() - eskiZaman1 > 150){ 
+      eskiZaman1 = millis();
+  if(buton==0){                        // Butona basınca if döngüsünü çalıştır.
+    sayac++;                          //Sayac değerini 1 arttır.
+   
+  }
+  }
+
+  if(sayac == 1){         // Sayac değeri 1 olunca parlaklik değerini ayarla
+   
+   parlaklik  = map(analogRead(pot),0,1023,0,255);  
+  }
+
+  if(sayac == 2){        // Sayac değeri 2 olunca displayin hızını ayarla
+   hiz  = map(analogRead(pot),0,1023,0,1000);
+  }
+  
+  if(sayac == 3){        // Sayac değeri 3 olunca sayacı 0 yap
+    sayac = 1;
+  }
+
+     if (millis() - eskiZaman > hiz){
+      eskiZaman = millis();
+      say++;
+      if(say==100){ say = 0;}
+      
+          birler = say%10;
+          onlar = (say/10)%10;
+          
+      if(onlar==0) {onlar=10;}
+         shiftOut(dataPin, clockPin,MSBFIRST, rakamlar[birler]);
+         shiftOut(dataPin, clockPin,MSBFIRST, rakamlar[onlar]);
+         digitalWrite(latchPin, 0);digitalWrite(latchPin, 1);
+        
+      
+     }
+      analogWrite(outputEnablePin, parlaklik); // Display parlaklığını ayarlıyoruz.
+
+
+}
